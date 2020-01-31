@@ -1,0 +1,9 @@
+end_body=200 
+min_steps=100
+output_during_run=false
+refine_edges_number=1
+remove_system_edge_nodes_number=1
+output_summary_number=100
+output_whole_system_number=100000
+output_specific_neigh=100000
+output_specific=1000
