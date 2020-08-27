@@ -1161,7 +1161,7 @@ CNode *common_face(CBody *one, CBody *two, CNode *node)
 
 int g(int edge1[], int edge2[], int edge_id[], int one, int two, int size)
 {
-  for (int c = 0; c < size; c++)
+  for (unsigned int c = 0; c < size; c++)
     if (edge1[c] == one && edge2[c] == two)
       return edge_id[c] + 1;
     else if (edge1[c] == two && edge2[c] == one)
@@ -1171,7 +1171,7 @@ int g(int edge1[], int edge2[], int edge_id[], int one, int two, int size)
 
 int f(int the_nodes[], int number, int size)
 {
-  for (int c = 0; c < size; c++)
+  for (unsigned int c = 0; c < size; c++)
     if (the_nodes[c] == number)
       return c + 1;
   return 0;
@@ -1216,13 +1216,22 @@ void evolver_out(int id)
   std::ofstream out_file;
   out_file.open(file_name);
 
+  out_file << "torus_filled\n";
+  out_file << "periods\n";
+  out_file << "1 0 0\n";
+  out_file << "0 1 0\n";
+  out_file << "0 0 1\n\n";
+
   out_file << "vertices\n";
   for (unsigned int c = 0; c < the_nodes.size(); c++)
   {
     out_file << c + 1 << '\t';
-    out_file << (origin + (*the_nodes[c] - origin)).x << '\t';
-    out_file << (origin + (*the_nodes[c] - origin)).y << '\t';
-    out_file << (origin + (*the_nodes[c] - origin)).z << '\t';
+    // out_file << (origin + (*the_nodes[c] - origin)).x << '\t';
+    // out_file << (origin + (*the_nodes[c] - origin)).y << '\t';
+    // out_file << (origin + (*the_nodes[c] - origin)).z << '\t';
+    out_file << the_nodes[c]->x << '\t';
+    out_file << the_nodes[c]->y << '\t';
+    out_file << the_nodes[c]->z << '\t';
     out_file << "original " << the_nodes[c]->id << std::endl;
   }
 
@@ -1245,7 +1254,26 @@ void evolver_out(int id)
       out_file << edge_counter + 1 << '\t';
       out_file << f(nodeids, edge1[edge_counter], the_nodes.size()) << '\t';
       out_file << f(nodeids, edge2[edge_counter], the_nodes.size()) << '\t';
-      out_file << std::endl;
+      if (body->triplets[d].v1->x - body->triplets[d].v2->x > 0.5)
+        out_file << "+" << '\t';
+      else if (body->triplets[d].v1->x - body->triplets[d].v2->x < -0.5)
+        out_file << "-" << '\t';
+      else
+        out_file << "*" << '\t';
+
+      if (body->triplets[d].v1->y - body->triplets[d].v2->y > 0.5)
+        out_file << "+" << '\t';
+      else if (body->triplets[d].v1->y - body->triplets[d].v2->y < -0.5)
+        out_file << "-" << '\t';
+      else
+        out_file << "*" << '\t';
+
+      if (body->triplets[d].v1->z - body->triplets[d].v2->z > 0.5)
+        out_file << "+" << '\n';
+      else if (body->triplets[d].v1->z - body->triplets[d].v2->z < -0.5)
+        out_file << "-" << '\n';
+      else
+        out_file << "*" << '\n';
       edge_counter++;
     }
     if (body->triplets[d].v2->id > body->triplets[d].v3->id)
@@ -1256,7 +1284,26 @@ void evolver_out(int id)
       out_file << edge_counter + 1 << '\t';
       out_file << f(nodeids, edge1[edge_counter], the_nodes.size()) << '\t';
       out_file << f(nodeids, edge2[edge_counter], the_nodes.size()) << '\t';
-      out_file << std::endl;
+      if (body->triplets[d].v2->x - body->triplets[d].v3->x > 0.5)
+        out_file << "+" << '\t';
+      else if (body->triplets[d].v2->x - body->triplets[d].v3->x < -0.5)
+        out_file << "-" << '\t';
+      else
+        out_file << "*" << '\t';
+
+      if (body->triplets[d].v2->y - body->triplets[d].v3->y > 0.5)
+        out_file << "+" << '\t';
+      else if (body->triplets[d].v2->y - body->triplets[d].v3->y < -0.5)
+        out_file << "-" << '\t';
+      else
+        out_file << "*" << '\t';
+
+      if (body->triplets[d].v2->z - body->triplets[d].v3->z > 0.5)
+        out_file << "+" << '\n';
+      else if (body->triplets[d].v2->z - body->triplets[d].v3->z < -0.5)
+        out_file << "-" << '\n';
+      else
+        out_file << "*" << '\n';
       edge_counter++;
     }
     if (body->triplets[d].v3->id > body->triplets[d].v1->id)
@@ -1267,7 +1314,28 @@ void evolver_out(int id)
       out_file << edge_counter + 1 << '\t';
       out_file << f(nodeids, edge1[edge_counter], the_nodes.size()) << '\t';
       out_file << f(nodeids, edge2[edge_counter], the_nodes.size()) << '\t';
-      out_file << "color red " << std::endl;
+
+      if (body->triplets[d].v3->x - body->triplets[d].v1->x > 0.5)
+        out_file << "+" << '\t';
+      else if (body->triplets[d].v3->x - body->triplets[d].v1->x < -0.5)
+        out_file << "-" << '\t';
+      else
+        out_file << "*" << '\t';
+
+      if (body->triplets[d].v3->y - body->triplets[d].v1->y > 0.5)
+        out_file << "+" << '\t';
+      else if (body->triplets[d].v3->y - body->triplets[d].v1->y < -0.5)
+        out_file << "-" << '\t';
+      else
+        out_file << "*" << '\t';
+
+      if (body->triplets[d].v3->z - body->triplets[d].v1->z > 0.5)
+        out_file << "+" << '\t';
+      else if (body->triplets[d].v3->z - body->triplets[d].v1->z < -0.5)
+        out_file << "-" << '\t';
+      else
+        out_file << "*" << '\t';
+      out_file << "color red " << '\n';
       edge_counter++;
     }
   }
